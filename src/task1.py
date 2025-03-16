@@ -7,7 +7,7 @@ from matplotlib.cm import viridis
 # ======= DATA MANAGEMENT ======= # 
 def create_dirs():
     """Create results directory structure"""
-    os.makedirs('results/task1_noise', exist_ok=True)
+    os.makedirs('results/task1', exist_ok=True)
 
 def parse_experiment_id(experiment_id):
     """Converts an experiment ID to readable parameters for plot titles."""
@@ -77,7 +77,7 @@ def plot_and_save(xx, yy, x, y, y_clean, y_pred, params, mse, experiment_name):
     """Plot and save results"""
     
     # Create directory for this experiment
-    save_dir = f"results/task1_noise/{experiment_name}"
+    save_dir = f"results/task1/{experiment_name}"
     os.makedirs(save_dir, exist_ok=True)
     
     # Plot
@@ -147,7 +147,7 @@ def generate_summary_plots(results):
     plt.ylabel("MSE")
     plt.title(f"MSE vs. Number of Points (σ={sig_fixed}, λ={lam_fixed})")
     plt.legend()
-    plt.savefig("results/task1_noise/summary_n_vs_mse.png")
+    plt.savefig("results/task1/summary_n_vs_mse.png")
     plt.close()
     
     # ===== 2. Plot MSE vs. Kernel Length Scale (sig) for different noise levels ===== #
@@ -168,7 +168,7 @@ def generate_summary_plots(results):
     plt.title(f"MSE vs. Kernel Length Scale (n={n_fixed}, λ={lam_fixed})")
     plt.xscale("log")
     plt.legend()
-    plt.savefig("results/task1_noise/summary_sig_vs_mse.png")
+    plt.savefig("results/task1/summary_sig_vs_mse.png")
     plt.close()
     
     # ===== 3. Plot MSE vs. Regularization (lam) for different noise levels ===== #
@@ -189,73 +189,10 @@ def generate_summary_plots(results):
     plt.title(f"MSE vs. Regularization (n={n_fixed}, σ={sig_fixed})")
     plt.xscale("log")
     plt.legend()
-    plt.savefig("results/task1_noise/summary_lam_vs_mse.png")
+    plt.savefig("results/task1/summary_lam_vs_mse.png")
     plt.close()
     
-    # ===== 4. Plot MSE vs. Noise Level for different n values ===== #
-    plt.figure(figsize=(7, 5), dpi=200)
-    unique_n = sorted(set(n_vals))
-    
-    for i, n in enumerate(unique_n):
-        color_idx = i / max(1, len(unique_n) - 1)
-        indices = (np.abs(n_vals - n) < 0.1) & (np.abs(sig_vals - sig_fixed) < 0.001) & (np.abs(lam_vals - lam_fixed) < 0.001)
-        
-        # Only plot if we have enough points
-        if sum(indices) >= 2:
-            plt.plot(noise_vals[indices], mse_vals[indices], 'o-', 
-                     color=viridis(color_idx), 
-                     label=f"n={int(n)}")
-    
-    plt.xlabel("Noise Level")
-    plt.ylabel("MSE")
-    plt.title(f"MSE vs. Noise Level (σ={sig_fixed}, λ={lam_fixed})")
-    plt.legend()
-    plt.savefig("results/task1_noise/summary_noise_vs_mse.png")
-    plt.close()
-    
-    # ===== 5. Plot MSE vs. Noise Level for different sig values ===== #
-    plt.figure(figsize=(7, 5), dpi=200)
-    unique_sig = sorted(set(sig_vals))
-    
-    for i, sig in enumerate(unique_sig):
-        color_idx = i / max(1, len(unique_sig) - 1)
-        indices = (sig_vals == sig) & (np.abs(n_vals - n_fixed) < 0.1) & (np.abs(lam_vals - lam_fixed) < 0.001)
-        
-        # Only plot if we have enough points
-        if sum(indices) >= 2:
-            plt.plot(noise_vals[indices], mse_vals[indices], 'o-', 
-                     color=viridis(color_idx), 
-                     label=f"σ={sig}")
-    
-    plt.xlabel("Noise Level")
-    plt.ylabel("MSE")
-    plt.title(f"MSE vs. Noise Level with Different Kernel Scales (n={n_fixed}, λ={lam_fixed})")
-    plt.legend()
-    plt.savefig("results/task1_noise/summary_noise_vs_mse_by_sig.png")
-    plt.close()
-    
-    # ===== 6. Plot MSE vs. Noise Level for different lam values ===== #
-    plt.figure(figsize=(7, 5), dpi=200)
-    unique_lam = sorted(set(lam_vals))
-    
-    for i, lam in enumerate(unique_lam):
-        color_idx = i / max(1, len(unique_lam) - 1)
-        indices = (lam_vals == lam) & (np.abs(n_vals - n_fixed) < 0.1) & (np.abs(sig_vals - sig_fixed) < 0.001)
-        
-        # Only plot if we have enough points
-        if sum(indices) >= 2:
-            plt.plot(noise_vals[indices], mse_vals[indices], 'o-', 
-                     color=viridis(color_idx), 
-                     label=f"λ={lam}")
-    
-    plt.xlabel("Noise Level")
-    plt.ylabel("MSE")
-    plt.title(f"MSE vs. Noise Level with Different Regularization (n={n_fixed}, σ={sig_fixed})")
-    plt.legend()
-    plt.savefig("results/task1_noise/summary_noise_vs_mse_by_lam.png")
-    plt.close()
-    
-    # ===== 7. 3D Surface Plot: MSE as a function of σ and λ ===== #
+    # ===== 4. 3D Surface Plot: MSE as a function of σ and λ ===== #
     from mpl_toolkits.mplot3d import Axes3D
     
     plt.figure(figsize=(10, 8), dpi=200)
@@ -307,10 +244,10 @@ def generate_summary_plots(results):
             plt.colorbar(surf, ax=ax, shrink=0.5, aspect=5)
             
             # Save the plot
-            plt.savefig("results/task1_noise/3d_sig_lam_vs_mse.png")
+            plt.savefig("results/task1/3d_sig_lam_vs_mse.png")
     plt.close()
     
-    # ===== 8. 3D Surface Plot: MSE as a function of n and noise level ===== #
+    # ===== 5. 3D Surface Plot: MSE as a function of n and noise level ===== #
     plt.figure(figsize=(10, 8), dpi=200)
     ax = plt.axes(projection='3d')
     
@@ -360,7 +297,7 @@ def generate_summary_plots(results):
             plt.colorbar(surf, ax=ax, shrink=0.5, aspect=5)
             
             # Save the plot
-            plt.savefig("results/task1_noise/3d_n_noise_vs_mse.png")
+            plt.savefig("results/task1/3d_n_noise_vs_mse.png")
     plt.close()
     
       
@@ -438,7 +375,7 @@ def explore_parameters():
         "worst_parameters": worst_result,
     }
     
-    with open("results/task1_noise/summary.yaml", "w") as f:
+    with open("results/task1/summary.yaml", "w") as f:
         yaml.dump(summary, f, sort_keys=False)
     
     # Generate summary plots
@@ -448,4 +385,4 @@ def explore_parameters():
 # Main execution
 if __name__ == "__main__":
     explore_parameters()
-    print("Parameter exploration with noise complete. Results saved in 'results/task1_noise' directory.")
+    print("Parameter exploration with noise complete. Results saved in 'results/task1' directory.")
